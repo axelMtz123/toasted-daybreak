@@ -17,21 +17,80 @@
 <body class="theme-cream">
   <header>
     <nav>
-      <div class="menu collapsed">
-          <div class="row active-row">
-              <a href="" class="cell active-col active-page">
-                <span class="label label-visible">I. Home</span>
-                <span class="roman-only">I.</span>
+      <div class="menu-wrapper">
+        <div class="menu collapsed">
+            <div class="row active-row">
+                <a href="" class="cell active-col active-page">
+                  <span class="label label-visible">I. Home</span>
+                  <span class="roman-only">I.</span>
+                  <span class="label-name">Home</span>
 
-                <div class="border-horizontal"></div>
-              </a>
-          </div>
+                  <div class="border-horizontal"></div>
+                </a>
+
+                <div class="border-vertical"></div>
+
+                <a href="/bottled-lattes" class="cell">
+                  <span class="label">II. Bottled Lattes</span>
+                  <span class="roman-only">II.</span>
+                  <span class="label-name">Bottled Lattes</span>
+
+                  <div class="border-horizontal"></div>
+                </a>
+            </div>
+
+            <div class="row-separator"></div>
+
+            <div class="row">
+                <a href="/menu" class="cell active-col">
+                  <span class="label">III. Menu</span>
+                  <span class="roman-only">III.</span>
+                  <span class="label-name">Menu</span>
+                </a>
+
+                <div class="border-vertical"></div>
+
+                <a href="/contact" class="cell">
+                  <span class="label">IV. Contact</span>
+                  <span class="roman-only">IV.</span>
+                  <span class="label-name">Contact</span>
+                </a>
+            </div>
+        </div>
       </div>
+
+      <h1 class="title">
+        <span class="small">coffee</span>
+        <span class="main">TOASTED</span>
+        <span class="small">bread</span>    
+      </h1>
+
+      <a class="nav-button-wrapper" href="#menu">
+        <img src="assets/toast-full.png" alt="Navigation Button">
+
+        <p>MENU</p>
+      </a>
     </nav>
   </header>
 
   <main>
-    <!-- Page sections -->
+    <section id="hero">
+      <div class="hero-container">
+        <div class="img-wrapper">
+          <img src="assets/hero-img-noBG" alt="Hero Image">
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="img-wrapper">
+          <img>
+      </div>
+
+      <div class="about-container">
+
+      </div>
+    </section>
   </main>
 
   <footer>
@@ -45,6 +104,6 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/Observer.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.20/dist/lenis.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/split-type@0.3.4/umd/index.min.js"></script>
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </body>
 </html>
