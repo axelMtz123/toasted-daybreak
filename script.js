@@ -113,3 +113,55 @@ mobileMenu.addEventListener("change", () => {
 });
 
 updateMenu();
+
+/* --- hero --- */
+
+const heroImg = document.querySelector("#hero .img-wrapper img");
+const heroImgWrapper = document.querySelector("#hero .img-wrapper");
+
+let showingSecondImage = false;
+
+heroImgWrapper.addEventListener("mouseenter", () => {
+  showingSecondImage = !showingSecondImage;
+
+  const nextSrc = showingSecondImage
+    ? "/assets/hero-img2.png"
+    : "/assets/hero-img (1).png";
+
+  gsap.killTweensOf(heroImg);
+
+  gsap.to(heroImg, {
+    opacity: 0,
+    duration: 0.5,
+    onComplete: () => {
+      heroImg.src = nextSrc;
+
+      gsap.to(heroImg, {
+        opacity: 1,
+        duration: 0.5
+      });
+    }
+  });
+});
+
+gsap.to("#hero .img-wrapper", {
+  yPercent: -20,
+  scrollTrigger: {
+    trigger: "#hero",
+    start: "top top",
+    end: "bottom top",
+    scrub: true
+  }
+})
+
+/* -- about -- */
+
+gsap.to ("#about .img-wrapper", {
+  yPercent: -30,
+  scrollTrigger: {
+    trigger: "#about",
+    start: "top top",
+    end: "bottom top",
+    scrub: 1,
+  }
+})
