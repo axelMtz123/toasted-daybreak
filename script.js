@@ -157,7 +157,7 @@ gsap.to("#hero .img-wrapper", {
 /* -- about -- */
 
 gsap.to ("#about .img-wrapper", {
-  yPercent: -30,
+  yPercent: -50,
   scrollTrigger: {
     trigger: "#about",
     start: "top top",
@@ -282,27 +282,43 @@ function getCupPosition() {
   };
 }
 
-const cupTimeline = gsap.timeline({
-  scrollTrigger: {
-    trigger: "#menu",
-    start: "top top",
-    end: "bottom bottom",
-    scrub: true,
-    invalidateOnRefresh: true
+const cupMedia = gsap.matchMedia();
+
+cupMedia.add(
+  {
+    desktop: "(min-width: 901px)",
+    mobile: "(max-width: 900px)"
+  },
+  (context) => {
+    const isMobile = context.conditions.mobile;
+
+    const cupTimeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: toastMarquee,
+        start: "clamp(center 55%)",
+        end: () => `+=${Math.round(
+          window.innerHeight * (isMobile ? 0.65 : 0.9)
+        )}`,
+        pin: "#menu",
+        pinSpacing: true,
+        anticipatePin: 1,
+        scrub: 1.2,
+        invalidateOnRefresh: true,
+      }
+    });
+
+    cupTimeline.to(movingCup, {
+      x: () => getCupPosition().x,
+      y: () => getCupPosition().y,
+      ease: "none"
+    }, 0);
+
+    cupTimeline.to(movingCupImage, {
+      rotation: isMobile ? 18 : 30,
+      ease: "none"
+    }, 0);
   }
-});
-
-cupTimeline.to(movingCup, {
-  x: () => getCupPosition().x,
-  y: () => getCupPosition().y,
-  ease: "none"
-}, 0);
-
-cupTimeline.to(movingCupImage, {
-  rotation: 30,
-  ease: "none"
-}, 0);
-
+);
 setupToastMarquee();
 
 if (document.readyState === "complete") {
