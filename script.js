@@ -165,3 +165,165 @@ gsap.to ("#about .img-wrapper", {
     scrub: 1,
   }
 })
+
+/* -- Smooth scrolling -- */
+
+gsap.registerPlugin(ScrollTrigger);
+
+const smoothScroll = new Lenis();
+
+smoothScroll.on("scroll", ScrollTrigger.update);
+
+function updateSmoothScroll(time) {
+  smoothScroll.raf(time * 1000);
+}
+
+gsap.ticker.add(updateSmoothScroll);
+gsap.ticker.lagSmoothing(0);
+
+
+/* -- Toast marquee -- */
+
+const toastMarquee = document.querySelector(".toast-marquee");
+const toastMarqueeTrack = toastMarquee.querySelector(".marquee-track");
+const toastMarqueeItems = [...toastMarqueeTrack.children];
+
+let toastMarqueeTween;
+let toastMarqueeResizeTimer;
+
+async function setupToastMarquee() {
+  await Promise.all(
+    toastMarqueeItems.map((item) => {
+      const image = item.querySelector("img");
+
+      if (image.complete) return Promise.resolve();
+
+      return new Promise((resolve) => {
+        image.addEventListener("load", resolve, { once: true });
+        image.addEventListener("error", resolve, { once: true });
+      });
+    })
+  );
+
+  function buildToastMarquee() {
+    toastMarqueeTween?.kill();
+    gsap.set(toastMarqueeTrack, { x: 0 });
+
+    // Remove copies from the previous build
+    [...toastMarqueeTrack.children].forEach((item) => {
+      if (!toastMarqueeItems.includes(item)) {
+        item.remove();
+      }
+    });
+
+    const gap =
+      parseFloat(getComputedStyle(toastMarqueeTrack).columnGap) || 0;
+
+    const loopWidth =
+      toastMarqueeTrack.getBoundingClientRect().width + gap;
+
+    if (!loopWidth) return;
+
+    const copyCount = Math.ceil(
+      toastMarquee.clientWidth / loopWidth
+    );
+
+    for (let copy = 0; copy < copyCount; copy++) {
+      toastMarqueeItems.forEach((item) => {
+        const clone = item.cloneNode(true);
+
+        clone.setAttribute("aria-hidden", "true");
+        toastMarqueeTrack.append(clone);
+      });
+    }
+
+    toastMarqueeTween = gsap.to(toastMarqueeTrack, {
+      x: -loopWidth,
+      duration: loopWidth / 60,
+      ease: "none",
+      repeat: -1
+    });
+  }
+
+  buildToastMarquee();
+  ScrollTrigger.refresh();
+
+  window.addEventListener("resize", () => {
+    clearTimeout(toastMarqueeResizeTimer);
+
+    toastMarqueeResizeTimer = setTimeout(() => {
+      buildToastMarquee();
+      ScrollTrigger.refresh();
+    }, 150);
+  });
+}
+
+
+/* -- Cup movement -- */
+
+const movingCup = document.querySelector(".moving-cup-wrapper");
+const movingCupImage = movingCup.querySelector("img");
+const cupStartContainer = document.querySelector(".coffee-menu");
+
+function getCupPosition() {
+  const start = cupStartContainer.getBoundingClientRect();
+  const destination = toastMarquee.getBoundingClientRect();
+
+  const startX = start.left + start.width / 2;
+  const startY = start.top + movingCup.offsetHeight / 2;
+
+  const destinationX = destination.left + destination.width / 2;
+  const destinationY =
+    destination.top + toastMarqueeTrack.offsetHeight / 2;
+
+  return {
+    x: destinationX - startX,
+    y: destinationY - startY
+  };
+}
+
+const cupTimeline = gsap.timeline({
+  scrollTrigger: {
+    trigger: "#menu",
+    start: "top top",
+    end: "bottom bottom",
+    scrub: true,
+    invalidateOnRefresh: true
+  }
+});
+
+cupTimeline.to(movingCup, {
+  x: () => getCupPosition().x,
+  y: () => getCupPosition().y,
+  ease: "none"
+}, 0);
+
+cupTimeline.to(movingCupImage, {
+  rotation: 30,
+  ease: "none"
+}, 0);
+
+setupToastMarquee();
+
+if (document.readyState === "complete") {
+  ScrollTrigger.refresh();
+} else {
+  window.addEventListener("load", () => {
+    ScrollTrigger.refresh();
+  }, { once: true });
+}
+
+const coffeeMenuButton = document.querySelector(".coffee-menu-button");
+const coffeeMenuButtonFace = coffeeMenuButton.querySelector("span");
+
+function spinCoffeeMenuButton() {
+  gsap.to(coffeeMenuButtonFace, {
+    rotation: "+=720",
+    duration: 1.4,
+    ease: "power3.out",
+    overwrite: true
+  });
+}
+
+coffeeMenuButton.addEventListener("mouseenter", spinCoffeeMenuButton);
+coffeeMenuButton.addEventListener("focus", spinCoffeeMenuButton);
