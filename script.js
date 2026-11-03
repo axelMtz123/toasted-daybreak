@@ -170,7 +170,7 @@ gsap.to ("#about .img-wrapper", {
 
 gsap.registerPlugin(ScrollTrigger);
 
-const smoothScroll = new Lenis();
+const smoothScroll = new Lenis({syncTouch: false});
 
 smoothScroll.on("scroll", ScrollTrigger.update);
 
@@ -314,7 +314,7 @@ cupMedia.add(
     }, 0);
 
     cupTimeline.to(movingCupImage, {
-      rotation: isMobile ? 18 : 30,
+      rotation: 30,
       ease: "none"
     }, 0);
   }
