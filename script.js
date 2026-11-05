@@ -2,7 +2,7 @@ gsap.registerPlugin(Flip, ScrollTrigger, Observer);
 
 /* --- Smooth Scroll --- */
 const lenis = new Lenis({
-  anchors: true,
+  anchors: false,
 });
 
 lenis.on('scroll', ScrollTrigger.update);
@@ -113,6 +113,47 @@ mobileMenu.addEventListener("change", () => {
 });
 
 updateMenu();
+
+const sectionNav = document.querySelector("header nav");
+const sectionContent = document.querySelector("main");
+let sectionFade;
+
+sectionNav.addEventListener("click", (event) => {
+  const link = event.target.closest('a[href^="#"]');
+
+  if (
+    !link ||
+    event.ctrlKey || event.metaKey || event.shiftKey || event.altKey
+  ) return;
+
+  const hash = link.getAttribute("href");
+  const section = document.getElementById(hash.slice(1));
+
+  if (!section) return;
+
+  event.preventDefault();
+  if (sectionFade?.isActive()) return;
+
+  sectionFade = gsap.timeline()
+    .to(sectionContent, {
+      opacity: 0,
+      duration: .1,
+      ease: "power1.in"
+    })
+    .call(() => {
+      lenis.scrollTo(section, { immediate: true });
+
+      if (location.hash !== hash) {
+        history.pushState(null, "", hash);
+      }
+    })
+    .to(sectionContent, {
+      opacity: 1,
+      duration: 0.28,
+      ease: "power1.out",
+      clearProps: "opacity"
+    });
+});
 
 /* --- hero --- */
 
@@ -526,11 +567,11 @@ if (footerTitleElement) {
           yPercent: 0,
           duration: 1,
           stagger: 0.03,
-          delay: .5,
+          delay: .7,
           ease: "power2.out",
           scrollTrigger: {
             trigger: "footer",
-            start: conditions.mobile ? "top top+=100%" : "bottom bottom",
+            start: conditions.mobile ? "top top+=100%" : "top top+=50%",
           }
         }
       );

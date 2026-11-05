@@ -1628,7 +1628,7 @@ form button {
 
   .contact-title {
     grid-column: 1;
-    font-size: var(--fs-76);
+    font-size: var(--fs-61);
   }
 
   .contact-form {
