@@ -343,3 +343,91 @@ function spinCoffeeMenuButton() {
 
 coffeeMenuButton.addEventListener("mouseenter", spinCoffeeMenuButton);
 coffeeMenuButton.addEventListener("focus", spinCoffeeMenuButton);
+
+/* -- image --*/
+
+const revealMedia = gsap.matchMedia();
+
+revealMedia.add(
+  {
+    desktop: "(min-width: 901px)",
+    mobile: "(max-width: 900px)"
+  },
+  (context) => {
+    const isMobile = context.conditions.mobile;
+
+    const imageRevealTimeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: ".image-reveal",
+        start: "top top",
+        end: "+=140%",
+        pin: true,
+        scrub: 1,
+        invalidateOnRefresh: true
+      }
+    });
+
+    imageRevealTimeline
+    .to(".reveal-image", {
+      width: isMobile ? "100%" : "40%",
+      height: isMobile ? "100%" : "110%",
+      duration: 1,
+      ease: "none",
+      rotate: isMobile ? "0deg" : "90deg",
+    })
+    .fromTo(".reveal-title",
+      {
+        autoAlpha: 0,
+        y: 40
+      },
+      {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.35,
+        ease: "none"
+      },
+      "-=0.15"
+    )
+    .to({}, { duration: 0.25 });
+  }
+);
+
+const themeMedia = gsap.matchMedia();
+
+themeMedia.add(
+  {
+    desktop: "(min-width: 901px)",
+    mobile: "(max-width: 900px)"
+  },
+  (context) => {
+    const isMobile = context.conditions.mobile;
+    const themeRoot = document.body;
+
+    const originalGreen = themeRoot.classList.contains("theme-green");
+    const originalCream = themeRoot.classList.contains("theme-cream");
+
+    function setGreenTheme(isGreen) {
+      themeRoot.classList.toggle("theme-green", isGreen);
+      themeRoot.classList.toggle("theme-cream", !isGreen);
+    }
+
+    const themeTrigger = ScrollTrigger.create({
+      trigger: ".image-reveal",
+      start: isMobile ? "top 65%" : "top 50%",
+
+      onEnter: () => setGreenTheme(true),
+      onLeaveBack: () => setGreenTheme(false),
+
+      onRefresh: (self) => {
+        setGreenTheme(self.scroll() >= self.start);
+      }
+    });
+
+    setGreenTheme(themeTrigger.scroll() >= themeTrigger.start);
+
+    return () => {
+      themeRoot.classList.toggle("theme-green", originalGreen);
+      themeRoot.classList.toggle("theme-cream", originalCream);
+    };
+  }
+);
