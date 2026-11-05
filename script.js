@@ -369,8 +369,8 @@ revealMedia.add(
 
     imageRevealTimeline
     .to(".reveal-image", {
-      width: isMobile ? "100%" : "40%",
-      height: isMobile ? "100%" : "110%",
+      width: isMobile ? "100%" : "45%",
+      height: isMobile ? "100%" : "140%",
       duration: 1,
       ease: "none",
       rotate: isMobile ? "0deg" : "90deg",
