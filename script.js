@@ -413,7 +413,7 @@ themeMedia.add(
 
     const themeTrigger = ScrollTrigger.create({
       trigger: ".image-reveal",
-      start: isMobile ? "top 65%" : "top 50%",
+      start: isMobile ? "bottom bottom" : "bottom bottom",
 
       onEnter: () => setGreenTheme(true),
       onLeaveBack: () => setGreenTheme(false),
@@ -431,3 +431,111 @@ themeMedia.add(
     };
   }
 );
+
+/* -- contact form -- */
+
+const socialMarquee = document.querySelector(".social-marquee");
+const socialMarqueeTrack = socialMarquee.querySelector(".marquee-track");
+const socialMarqueeItems = [...socialMarqueeTrack.children];
+
+let socialMarqueeTween;
+let socialMarqueeResizeTimer;
+let socialMarqueeWidth = window.innerWidth;
+
+function buildSocialMarquee() {
+  socialMarqueeTween?.kill();
+  gsap.set(socialMarqueeTrack, { x: 0 });
+
+  [...socialMarqueeTrack.children].forEach((item) => {
+    if (!socialMarqueeItems.includes(item)) {
+      item.remove();
+    }
+  });
+
+  const socialMarqueeGap =
+    parseFloat(getComputedStyle(socialMarqueeTrack).columnGap) || 0;
+
+  const socialMarqueeLoopWidth =
+    socialMarqueeTrack.getBoundingClientRect().width + socialMarqueeGap;
+
+  if (!socialMarqueeLoopWidth) return;
+
+  const socialMarqueeCopies = Math.ceil(
+    socialMarquee.clientWidth / socialMarqueeLoopWidth
+  );
+
+  for (let copy = 0; copy < socialMarqueeCopies; copy++) {
+    socialMarqueeItems.forEach((item) => {
+      const clone = item.cloneNode(true);
+
+      clone.setAttribute("aria-hidden", "true");
+      socialMarqueeTrack.append(clone);
+    });
+  }
+
+  socialMarqueeTween = gsap.to(socialMarqueeTrack, {
+    x: -socialMarqueeLoopWidth,
+    duration: socialMarqueeLoopWidth / 60,
+    ease: "none",
+    repeat: -1
+  });
+}
+
+document.fonts.ready.then(buildSocialMarquee);
+
+window.addEventListener("resize", () => {
+  if (window.innerWidth === socialMarqueeWidth) return;
+
+  socialMarqueeWidth = window.innerWidth;
+
+  clearTimeout(socialMarqueeResizeTimer);
+  socialMarqueeResizeTimer = setTimeout(buildSocialMarquee, 150);
+});
+
+socialMarquee.addEventListener("mouseenter", () => {
+  socialMarqueeTween?.pause();
+});
+
+socialMarquee.addEventListener("mouseleave", () => {
+  socialMarqueeTween?.resume();
+});
+
+/* -- footer -- */
+
+const footerElement = document.querySelector("footer");
+const footerTitleElement = footerElement?.querySelector("h2");
+
+if (footerTitleElement) {
+  const footerMedia = gsap.matchMedia();
+
+  footerMedia.add(
+    {
+      desktop: "(width > 900px)",
+      mobile: "(width <= 900px)"
+    },
+    ({ conditions }) => {
+      const footerTitleSplit = new SplitType(footerTitleElement, {
+        types: "chars"
+      });
+
+      gsap.fromTo(
+        footerTitleSplit.chars,
+        { autoAlpha: 0, yPercent: 100 },
+        {
+          autoAlpha: 1,
+          yPercent: 0,
+          duration: 1,
+          stagger: 0.03,
+          delay: .5,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: "footer",
+            start: conditions.mobile ? "top top+=100%" : "bottom bottom",
+          }
+        }
+      );
+
+      return () => footerTitleSplit.revert();
+    }
+  );
+}
