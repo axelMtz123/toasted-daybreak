@@ -616,6 +616,12 @@ lenis.stop();
 
 const loaderTimeline = gsap.timeline({
   defaults: { duration: 1, ease: "power1.inOut" },
+
+  onComplete: () => {
+    clearInterval(loaderToastInterval);
+
+    if (loaderPausesLenis) lenis.start();
+  }
 });
 
 loaderTimeline
@@ -635,12 +641,4 @@ loaderTimeline
     duration: 1.1,
     ease: "power3.out"
   })
-  .set(".loader", { display: "none" })
-  .call(() => {
-  clearInterval(loaderToastInterval);
-
-  document.documentElement.classList.remove("scroll-locked");
-  document.scrollingElement.style.removeProperty("overflow-y");
-
-  lenis.start();
-});
+  .set(".loader", { display: "none" });
