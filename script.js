@@ -619,8 +619,7 @@ const loaderTimeline = gsap.timeline({
 
   onComplete: () => {
     clearInterval(loaderToastInterval);
-
-    if (loaderPausesLenis) lenis.start();
+    lenis.start();
   }
 });
 
