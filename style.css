@@ -102,10 +102,6 @@
   padding: 0;
 }
 
-html {
-  overflow: hidden !important;
-}
-
 body {
   font-family: var(--ff-body);
   font-size: var(--fs-16);
