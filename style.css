@@ -102,8 +102,8 @@
   padding: 0;
 }
 
-html, body {
-  min-height: 100%;
+html {
+  overflow: hidden !important;
 }
 
 body {
@@ -237,8 +237,8 @@ nav {
 
 .nav-button-wrapper {
   justify-self: end;
-  width: 100px;
-  height: 100px;
+  width: clamp(65px, 18vw, 100px);
+  height: clamp(65px, 18vw, 100px);
   position: relative;
   display:flex;
   justify-content: center;
@@ -1680,6 +1680,7 @@ footer {
   letter-spacing: -4%;
   line-height: .7;
   color: var(--theme-accent);
+
 }
 
 .copyright {
@@ -1704,5 +1705,94 @@ footer {
   .title-wrapper h2 {
     font-size: clamp(5rem, 15vw, 10rem);
     line-height: .7;
+  }
+
+}
+
+/* -- loader -- */
+
+.loader {
+  touch-action: none;
+  cursor: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(255, 244, 223, 0.9);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.loader-content {
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.loader-title {
+  font-size: clamp(1rem, 25vw, 10rem);
+  font-family: var(--ff-header);
+  font-style: italic;
+  color: var(--theme-accent);
+  line-height: .75;
+  letter-spacing: -4%;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+
+.loader-title span {
+  overflow-y: hidden;
+  width: 100%;
+}
+
+.loader-img-wrapper {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-img-wrapper img {
+  max-width: 100px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.extra-text {
+  font-size: 14px;
+  font-weight: 400;
+  opacity: 75%;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .loader-title {
+    font-size: clamp(5rem, 15vw, 10rem);
+    line-height: .75;
+    flex-direction: column;
+    justify-content: start;
+  }
+
+  .loader-title span {
+    text-align: center;
+  }
+
+  .extra-text {
+    max-width: 70%
   }
 }

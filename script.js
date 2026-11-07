@@ -207,21 +207,6 @@ gsap.to ("#about .img-wrapper", {
   }
 })
 
-/* -- Smooth scrolling -- */
-
-gsap.registerPlugin(ScrollTrigger);
-
-const smoothScroll = new Lenis({syncTouch: false});
-
-smoothScroll.on("scroll", ScrollTrigger.update);
-
-function updateSmoothScroll(time) {
-  smoothScroll.raf(time * 1000);
-}
-
-gsap.ticker.add(updateSmoothScroll);
-gsap.ticker.lagSmoothing(0);
-
 
 /* -- Toast marquee -- */
 
@@ -565,13 +550,14 @@ if (footerTitleElement) {
         {
           autoAlpha: 1,
           yPercent: 0,
-          duration: 1,
           stagger: 0.03,
-          delay: .7,
           ease: "power2.out",
           scrollTrigger: {
             trigger: "footer",
-            start: conditions.mobile ? "top top+=100%" : "top top+=50%",
+            start: conditions.mobile ? "bottom bottom" : "bottom bottom",
+            end: "+=100%",
+            pin: true,
+            scrub: true
           }
         }
       );
@@ -580,3 +566,66 @@ if (footerTitleElement) {
     }
   );
 }
+
+/* -- loader -- */
+
+const loaderImage = document.querySelector(".loader-img-wrapper img");
+
+const loaderToastSources = [
+  "assets/gallery-img-1.png",
+  "assets/gallery-img-2.png",
+  "assets/gallery-img-3.png",
+  "assets/gallery-img-4.png",
+  "assets/gallery-img-5.png"
+];
+
+const loaderToastFrames = loaderToastSources.map((src) => {
+  const image = new Image();
+  image.src = src;
+  return image;
+});
+
+let loaderToastIndex = 0;
+loaderImage.src = loaderToastFrames[0].src;
+
+const loaderToastInterval = setInterval(() => {
+  loaderToastIndex = (loaderToastIndex + 1) % loaderToastFrames.length;
+  loaderImage.src = loaderToastFrames[loaderToastIndex].src;
+}, 300);
+
+const loaderTitleSplit = new SplitType(".loader-title span", {
+  types: "chars"
+});
+
+const loaderTextSplit = new SplitType(".extra-text p", {
+  types: "chars"
+});
+
+lenis.stop();
+
+const loaderTimeline = gsap.timeline({
+  defaults: { duration: 1, ease: "power1.inOut" },
+  onComplete: () => {
+    clearInterval(loaderToastInterval);
+    lenis.start();
+  }
+});
+
+loaderTimeline
+  .fromTo(
+    loaderTitleSplit.chars,
+    { yPercent: 100 },
+    { yPercent: 0, stagger: 0.05 }
+  )
+  .fromTo(
+    loaderTextSplit.chars,
+    { autoAlpha: 0 },
+    { autoAlpha: 1, stagger: 0.02 },
+    "-=0.5"
+  )
+  .to(".loader", {
+    autoAlpha: 0,
+    duration: 1.1,
+    ease: "power3.out"
+  })
+  .set(".loader", { display: "none" });
