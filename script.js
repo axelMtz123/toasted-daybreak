@@ -46,7 +46,7 @@ toastButton.addEventListener("mouseleave", () => {
 const menu = document.querySelector(".menu");
 const rows = [...menu.querySelectorAll(".row")];
 const cells = [...menu.querySelectorAll(".cell")];
-const currentPage = menu.querySelector(".active-page");
+let currentPage = menu.querySelector(".active-page");
 const mobileMenu = window.matchMedia("(max-width: 900px)");
 
 let hoveredCell = null;
@@ -133,6 +133,17 @@ sectionNav.addEventListener("click", (event) => {
 
   event.preventDefault();
   if (sectionFade?.isActive()) return;
+
+  const clickedCell = link.closest(".menu .cell");
+
+  if (clickedCell && mobileMenu.matches) {
+    currentPage?.classList.remove("active-page");
+    clickedCell.classList.add("active-page");
+
+    currentPage = clickedCell;
+    hoveredCell = null;
+    updateMenu();
+  }
 
   sectionFade = gsap.timeline()
     .to(sectionContent, {
